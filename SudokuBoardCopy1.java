@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class SudokuBoardCopy1 {
+public class MySudokuBoard {
 
     // 2D array to store sudoku board
     private int[][] board;
@@ -16,12 +16,12 @@ public class SudokuBoardCopy1 {
     // Constructor
     // pre: fileName refers to a valid .sdk file
     // post: Initialises the 9x9 board with values from the file
-    public SudokuBoardCopy1(File fileName) throws FileNotFoundException {
+    public MySudokuBoard(String fileName) throws FileNotFoundException {
 
         // Makes a 9x9 sudoku board
         board = new int[9][9];
 
-        Scanner input = new Scanner(fileName);
+        Scanner input = new Scanner(new File(fileName));
         int row = 0;
 
         // fills the sudoku board using the given file
@@ -41,6 +41,29 @@ public class SudokuBoardCopy1 {
             }
             row++;
         }
+    }
+    // Precondition: Requires method isValid and a file with a valid board
+    // Postcondition: Returns true if the board can be solved and is solved, otherwise false
+    public boolean solve() {
+        // Goes through every row and column
+        for (int row = 0; row < 9; row++) {
+            for (int column = 0; column < 9; column++) {
+                // if at any box there is an empty one it will go through every possible value in that box and check
+                // if it is valid it will call method solve(). If it is not valid it will backtrack and set that box to 0
+                if (board[row][column] == 0) {
+                    for (int num = 1; num <= 9; num++) {
+                        board[row][column] = num;
+                        if (isValid() && solve()) {
+                            return true;
+                        }
+                        board[row][column] = 0;
+                    }
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     // Checks if the sudoku board is valid using private helpers
@@ -105,7 +128,7 @@ public class SudokuBoardCopy1 {
                 // and return false. Otherwise, it will add the value inside the HashSet
                 if (value != 0) {
                     if (checked.contains(value)) {
-                        System.out.println("Error found at row: " + row);
+//                        System.out.println("Error found at row: " + row);
                         return false; // duplicate found
                     }
                     checked.add(value);
@@ -135,7 +158,7 @@ public class SudokuBoardCopy1 {
                 // and return false. Otherwise, it will add the value inside the HashSet
                 if (value != 0) {
                     if (checked.contains(value)) {
-                        System.out.println("Error found at column: " + column);
+//                        System.out.println("Error found at column: " + column);
                         return false; // duplicate found
                     }
                     checked.add(value);
@@ -161,7 +184,7 @@ public class SudokuBoardCopy1 {
                     // and return false. Otherwise, it will add the value inside the HashSet
                     if (value != 0) {
                         if (checked.contains(value)) {
-                            System.out.println("Error inside square: " + miniSquare);
+//                            System.out.println("Error inside square: " + miniSquare);
                             return false;
                         }
 
